@@ -47,9 +47,12 @@ namespace AnimeBamDownloader1.Logic
                 e.url = new Uri(baseUri, link.Attributes["href"].Value);
                 e.isChecked = true;
 
-                foreach (var item1 in types)
+                if (types != null && types.Count > 0)
                 {
-                    e.types.Add(item1.InnerText);
+                    foreach (var item1 in types)
+                    {
+                        e.types.Add(item1.InnerText);
+                    }
                 }
 
                 lst.Add(e);

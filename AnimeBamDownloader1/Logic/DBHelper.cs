@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,6 +22,7 @@ namespace AnimeBamDownloader1.Logic
             string connString = String.Format("Data Source={0};Version=3;", getDBPath());
             _conn = new SQLiteConnection(connString);
             _conn.Open();
+            
         }
         public static DBHelper getInstance()
         {
@@ -109,7 +111,7 @@ namespace AnimeBamDownloader1.Logic
 	                                    `quality`	TEXT,
 	                                    `downloaded_size`	INTEGER,
 	                                    `total_size`	INTEGER,
-	                                    `speed`	INTEGER,
+	                                    `speed`	REAL,
 	                                    `status`	INTEGER
                                     )";
                 SQLiteCommand cmd = new SQLiteCommand(create_cmd, conn);
@@ -127,6 +129,59 @@ namespace AnimeBamDownloader1.Logic
             return (int)id;
         }
 
+        public string getLocalThubnail(int series_id)
+        {
+            string fs_path = "";
+            try
+            {
+                string image_path = Path.Combine(getAppDataDir(), "thumbnail_cache", series_id.ToString() + ".jpg");
+                Directory.CreateDirectory(Path.GetDirectoryName(image_path));
+                if (File.Exists(image_path))
+                {
+                    fs_path = image_path;
+                }
+                else
+                {
+                    using (var cmd = new SQLiteCommand("select series_info.thumbnail_url from series_info where series_info.series_id=@id"))
+                    {
+                        cmd.Parameters.AddWithValue("@id", series_id);
+                        using (var reader = executeQuery(cmd))
+                        {
+                            if (reader.Read())
+                            {
+                                using (var webClint = new WebClient())
+                                {
+                                    int count = 0;
+                                    bool done = false;
+                                    while (!done && count++ < 5)
+                                    {
+                                        try
+                                        {
+                                            webClint.DownloadFile(reader.GetString(0), image_path);
+                                            done = true;
+                                            fs_path = image_path;
+                                        }
+                                        catch (Exception ex)
+                                        {
+
+                                        }
+                                    }
+                                }
+                            }
+                            reader.Close();
+                        }
+                    }
+                }
+                
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return fs_path;
+        }
+
         public int insertSeries(Series series, List<Episode> episodeList)
         {
 
@@ -140,6 +195,7 @@ namespace AnimeBamDownloader1.Logic
             cmd1.Parameters.AddWithValue("@desc", series.description);
             cmd1.Parameters.AddWithValue("@genre", String.Join(",", series.genre));
             cmd1.ExecuteNonQuery();
+            cmd1.Dispose();
 
             int series_id = getLastRowId();
 
@@ -148,6 +204,7 @@ namespace AnimeBamDownloader1.Logic
             var episode_id = 0;
             foreach (var episode in episodeList)
             {
+                if (!episode.isChecked) continue;
                 string insert_cmd2 = @"INSERT INTO episode_list (episode_id, series_id, url, name, animetitle, types, checked)
                                             VALUES (@eid, @sid, @url, @name, @atitle, @types, @checked)";
                 using (var cmd2 = new SQLiteCommand(insert_cmd2, _conn))

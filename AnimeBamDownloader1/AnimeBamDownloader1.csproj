@@ -86,7 +86,6 @@
       <DependentUpon>AddNewStep2.cs</DependentUpon>
     </Compile>
     <Compile Include="Logic\DBHelper.cs" />
-    <Compile Include="Logic\DownloadManager.cs" />
     <Compile Include="Logic\Model.cs" />
     <Compile Include="Logic\Parser.cs" />
     <Compile Include="MainWindow.cs">
