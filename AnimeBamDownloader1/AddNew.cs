@@ -68,7 +68,7 @@ namespace AnimeBamDownloader1
             {
                 var series_id = Logic.DBHelper.getInstance().insertSeries(_series, _episodeList);
                 Logic.DBHelper.getInstance().addToDownloadList(series_id, dig.SelectedPath);
-                Logic.DBHelper.getInstance().getLocalThubnail(_series.series_id);
+                Logic.DBHelper.getInstance().getLocalThumbnailPath(_series.series_id);
 
             }
         }

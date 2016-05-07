@@ -46,12 +46,15 @@ namespace AnimeBamDownloader1.Logic
             cmd.Connection = _conn;
             return cmd.ExecuteNonQuery();
         }
+
         private bool tableExits(SQLiteConnection conn, string table_name)
         {
             string sql_cmd = String.Format("SELECT name FROM sqlite_master WHERE type='table' AND name='{0}';", table_name);
             SQLiteCommand cmd = new SQLiteCommand(sql_cmd, conn);
             return cmd.ExecuteScalar() != null;
         }
+
+
         private void createDBIfNeeded()
         {
             string dbPath = getDBPath();
@@ -121,7 +124,8 @@ namespace AnimeBamDownloader1.Logic
             conn.Close();
             conn.Dispose();
         }
-        private int getLastRowId()
+
+        public int getLastRowId()
         {
             var cmd = new SQLiteCommand("select last_insert_rowid()", _conn);
             var id = (long)cmd.ExecuteScalar();
@@ -129,7 +133,7 @@ namespace AnimeBamDownloader1.Logic
             return (int)id;
         }
 
-        public string getLocalThubnail(int series_id)
+        public string getLocalThumbnailPath(int series_id)
         {
             string fs_path = "";
             try
@@ -229,13 +233,65 @@ namespace AnimeBamDownloader1.Logic
         {
             string insert_cmd1 = @"INSERT INTO series_download_list(series_id, save_folder, status)
                                     VALUES (@sid, @sf, @status)";
-            var cmd1 = new SQLiteCommand(insert_cmd1, _conn);
-            cmd1.Parameters.AddWithValue("@sid", series_id);
-            cmd1.Parameters.AddWithValue("@sf", save_location);
-            cmd1.Parameters.AddWithValue("@status", DownloaderStatus.Working);
-            cmd1.ExecuteNonQuery();
 
+            using (var cmd1 = new SQLiteCommand(insert_cmd1, _conn))
+            {
+                cmd1.Parameters.AddWithValue("@sid", series_id);
+                cmd1.Parameters.AddWithValue("@sf", save_location);
+                cmd1.Parameters.AddWithValue("@status", DownloaderStatus.Working);
+                cmd1.ExecuteNonQuery();
+            }
             return getLastRowId();
+        }
+
+        public void setDownloadTaskStatus(int id, DownloaderStatus status)
+        {
+            using (var cmd1 = new SQLiteCommand("UPDATE download_task SET status=@ns WHERE download_task_id=@id"))
+            {
+                cmd1.Parameters.AddWithValue("@ns", DownloaderStatus.Working);
+                cmd1.Parameters.AddWithValue("@id", id);
+                executeNonQuery(cmd1);
+            }
+        }
+
+        private Episode getEpisodeDetail(int series_id, int episode_id)
+        {
+            Episode e = new Episode();
+            using (var cmd = new SQLiteCommand("SELECT * from episode_list WHERE episode_list.series_id = @sid AND episode_list.episode_id = @eid"))
+            {
+                cmd.Parameters.AddWithValue("@sid", series_id);
+                cmd.Parameters.AddWithValue("@eid", episode_id);
+                using (var reader = executeQuery(cmd))
+                {
+                    e.name = reader.GetString(3);
+                    e.animetitle = reader.GetString(4);
+                    e.episode_id = episode_id;
+                    e.series_id = series_id;
+                    e.isChecked = reader.GetBoolean(6);
+                    e.url = new Uri(reader.GetString(2));
+                    e.types = reader.GetString(5).Split(',').ToList();
+                }
+            }
+            return e;
+        }
+
+        public string getDownloadDir(int seriesId)
+        {
+            using (var cmd1 = new SQLiteCommand("SELECT series_download_list.save_folder FROM series_download_list LEFT JOIN download_task ON download_task.series_id = series_download_list.series_id WHERE series_download_list.series_id = @id"))
+            {
+                cmd1.Parameters.AddWithValue("@id", seriesId);
+                using (var reader = executeQuery(cmd1))
+                {
+                    if (reader.Read())
+                    {
+                        return reader.GetString(0);
+                    }
+                    else
+                    {
+                        return getAppDataDir();
+                    }
+                }
+            }
         }
         
 

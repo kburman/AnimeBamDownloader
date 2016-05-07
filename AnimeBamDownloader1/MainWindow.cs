@@ -88,7 +88,7 @@ namespace AnimeBamDownloader1
                         label2.Text = reader.GetString(3);
                         label3.Text = "Genre : " + reader.GetString(6);
                         label4.Text = reader.GetString(5);
-                        pictureBox1.ImageLocation = dbhelper.getLocalThubnail(series_id);
+                        pictureBox1.ImageLocation = dbhelper.getLocalThumbnailPath(series_id);
                     }
                     reader.Close();
                 }
@@ -184,6 +184,20 @@ namespace AnimeBamDownloader1
                 int download_series_id = int.Parse(listView1.SelectedItems[0].Text);
                 updateStatusOfSeries(download_series_id, Logic.DownloaderStatus.Stopped);
                 reloadDownloadList();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void startDownloaderForToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var a = new AnimeBamDownloader1.Logic.SeriesDownloader(1);
+                a.start();
+
             }
             catch (Exception ex)
             {

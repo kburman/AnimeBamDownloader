@@ -19,6 +19,12 @@ namespace AnimeBamDownloader1.Logic
         public DownloaderStatus status { get; set; }
     }
 
+    public enum EpisodeStatus
+    {
+        Arrived = 1,
+        CommingSoon
+    }
+
     public enum DownloaderStatus
     {
         None=0,
