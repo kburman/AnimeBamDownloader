@@ -87,6 +87,7 @@
     </Compile>
     <Compile Include="Logic\DBHelper.cs" />
     <Compile Include="Logic\Downloader.cs" />
+    <Compile Include="Logic\DownloadManager.cs" />
     <Compile Include="Logic\Model.cs" />
     <Compile Include="Logic\Parser.cs" />
     <Compile Include="MainWindow.cs">

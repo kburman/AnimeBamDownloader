@@ -11,14 +11,14 @@ using System.Threading.Tasks;
 namespace AnimeBamDownloader1.Logic
 {
 
-    public class SeriesDownloader
+    public class SeriesDownloaderOld
     {
         public int series_id { get; private set; }
         
         private BackgroundWorker worker = new BackgroundWorker();
 
 
-        public SeriesDownloader(int series_download_list_id)
+        public SeriesDownloaderOld(int series_download_list_id)
         {
             using (var cmd = new SQLiteCommand("SELECT * FROM series_download_list WHERE series_download_list.id = @id"))
             {

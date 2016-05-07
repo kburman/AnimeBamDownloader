@@ -14,6 +14,7 @@ namespace AnimeBamDownloader1
     public partial class MainWindow : Form
     {
         Logic.DBHelper dbhelper = Logic.DBHelper.getInstance();
+        Logic.DownloadManager _dmanager = new Logic.DownloadManager();
         public MainWindow()
         {
             InitializeComponent();
@@ -43,6 +44,7 @@ namespace AnimeBamDownloader1
 
         private void reloadDownloadList()
         {
+            _dmanager.reloadDownloadStaus();
             using (var cmd = new SQLiteCommand("select series_download_list.id, series_download_list.status, series_download_list.save_folder, series_info.name, series_info.series_id from series_download_list inner join series_info on series_download_list.series_id = series_info.series_id"))
             {
                 using (var reader = Logic.DBHelper.getInstance().executeQuery(cmd))
@@ -195,7 +197,7 @@ namespace AnimeBamDownloader1
         {
             try
             {
-                var a = new AnimeBamDownloader1.Logic.SeriesDownloader(1);
+                var a = new AnimeBamDownloader1.Logic.SeriesDownloaderOld(1);
                 a.start();
 
             }
