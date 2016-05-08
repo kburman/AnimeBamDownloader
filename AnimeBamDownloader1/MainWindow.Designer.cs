@@ -28,9 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.startDownloaderForToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
@@ -60,8 +63,8 @@
             this.columnHeader10 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader12 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.startDownloaderForToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.columnHeader11 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -98,6 +101,21 @@
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
             this.exitToolStripMenuItem.Text = "Exit";
+            // 
+            // debugToolStripMenuItem
+            // 
+            this.debugToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.startDownloaderForToolStripMenuItem});
+            this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
+            this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
+            this.debugToolStripMenuItem.Text = "Debug";
+            // 
+            // startDownloaderForToolStripMenuItem
+            // 
+            this.startDownloaderForToolStripMenuItem.Name = "startDownloaderForToolStripMenuItem";
+            this.startDownloaderForToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.startDownloaderForToolStripMenuItem.Text = "Start Downloader";
+            this.startDownloaderForToolStripMenuItem.Click += new System.EventHandler(this.startDownloaderForToolStripMenuItem_Click);
             // 
             // statusStrip1
             // 
@@ -294,6 +312,7 @@
             this.columnHeader6,
             this.columnHeader7,
             this.columnHeader8,
+            this.columnHeader11,
             this.columnHeader9,
             this.columnHeader10,
             this.columnHeader12});
@@ -333,16 +352,19 @@
             // 
             // columnHeader9
             // 
+            this.columnHeader9.DisplayIndex = 5;
             this.columnHeader9.Text = "Downloaded";
             this.columnHeader9.Width = 82;
             // 
             // columnHeader10
             // 
+            this.columnHeader10.DisplayIndex = 6;
             this.columnHeader10.Text = "Total Size";
             this.columnHeader10.Width = 73;
             // 
             // columnHeader12
             // 
+            this.columnHeader12.DisplayIndex = 7;
             this.columnHeader12.Text = "Speed";
             this.columnHeader12.Width = 81;
             // 
@@ -350,20 +372,15 @@
             // 
             this.backgroundWorker1.WorkerReportsProgress = true;
             // 
-            // debugToolStripMenuItem
+            // columnHeader11
             // 
-            this.debugToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.startDownloaderForToolStripMenuItem});
-            this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
-            this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
-            this.debugToolStripMenuItem.Text = "Debug";
+            this.columnHeader11.Text = "Quality";
             // 
-            // startDownloaderForToolStripMenuItem
+            // timer1
             // 
-            this.startDownloaderForToolStripMenuItem.Name = "startDownloaderForToolStripMenuItem";
-            this.startDownloaderForToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
-            this.startDownloaderForToolStripMenuItem.Text = "Start Downloader";
-            this.startDownloaderForToolStripMenuItem.Click += new System.EventHandler(this.startDownloaderForToolStripMenuItem_Click);
+            this.timer1.Enabled = true;
+            this.timer1.Interval = 600;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // MainWindow
             // 
@@ -432,6 +449,8 @@
         private System.Windows.Forms.ColumnHeader columnHeader13;
         private System.Windows.Forms.ToolStripMenuItem debugToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem startDownloaderForToolStripMenuItem;
+        private System.Windows.Forms.ColumnHeader columnHeader11;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 

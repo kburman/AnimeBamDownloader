@@ -118,7 +118,8 @@ namespace AnimeBamDownloader1
                             i.SubItems.Add(reader.GetValue(4).ToString()); // Name
                             i.SubItems.Add(reader.GetValue(3).ToString()); // Anime Title
                             i.SubItems.Add(reader.GetValue(2).ToString()); // URL
-                                                                           // download status
+                            
+                            // download status
                             if (reader.GetValue(14).ToString() == "")
                             {
                                 i.SubItems.Add("");
@@ -129,9 +130,19 @@ namespace AnimeBamDownloader1
                                 i.SubItems.Add(a.ToString());
                             }
 
-                            i.SubItems.Add(reader.GetValue(11).ToString()); // downloaded size
-                            i.SubItems.Add(reader.GetValue(12).ToString()); // total size
-                            i.SubItems.Add(reader.GetValue(13).ToString()); // speed
+                            // quality 
+                            if (reader.GetValue(10).ToString() == "")
+                            {
+                                i.SubItems.Add("");
+                            }
+                            else
+                            {
+                                i.SubItems.Add(reader.GetValue(10).ToString());
+                            }
+                            var item1 = reader.GetValue(11);
+                            i.SubItems.Add(BytesToString(reader.GetValue(11).ToString())); // downloaded size
+                            i.SubItems.Add(BytesToString(reader.GetValue(12).ToString())); // total size
+                            i.SubItems.Add(BytesToString(reader.GetValue(13).ToString()) + "/s"); // speed
                             listView2.Items.Add(i);
                         }
                     }
@@ -197,7 +208,7 @@ namespace AnimeBamDownloader1
         {
             try
             {
-                var a = new AnimeBamDownloader1.Logic.SeriesDownloaderOld(1);
+                var a = new Logic.SeriesDownloaderOld(1);
                 a.start();
 
             }
@@ -205,6 +216,25 @@ namespace AnimeBamDownloader1
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            reloadEpisodeList();
+        }
+
+        static String BytesToString(string value)
+        {
+            long byteCount;
+            if (value == "") return "0B";
+            else byteCount = long.Parse(value);
+            string[] suf = { "B", "KB", "MB", "GB", "TB", "PB", "EB" }; //Longs run out around EB
+            if (byteCount == 0)
+                return "0" + suf[0];
+            long bytes = Math.Abs(byteCount);
+            int place = Convert.ToInt32(Math.Floor(Math.Log(bytes, 1024)));
+            double num = Math.Round(bytes / Math.Pow(1024, place), 1);
+            return (Math.Sign(byteCount) * num).ToString() + suf[place];
         }
     }
 }
